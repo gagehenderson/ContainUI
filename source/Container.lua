@@ -45,7 +45,19 @@ function Container:get_content_dimensions()
 
     for dim, _ in pairs(dimensions) do
         if self.spec_dimensions[dim] == "auto" then
-            error("Container's cannot have auto width or height yet.")
+            if self.layout_direction == "vertical" then
+                if dim == "width" then
+                    dimensions.width = self.child_bounds.max_width
+                else
+                    dimensions.height = self.child_bounds.total_height
+                end
+            elseif self.layout_direction == "horizontal" then
+                if dim == "width" then
+                    dimensions.width = self.child_bounds.total_width
+                else
+                    dimensions.height = self.child_bounds.max_height
+                end
+            end
         else
             local success, type, value = ui_unit.parse(self.spec_dimensions[dim])
             if not success then
@@ -72,11 +84,12 @@ function Container:add_child(child)
 
     table.insert(self.children, child)
 
+    self:_calc_child_bounds(child, true) -- TODO: Better name for this...
     child:calculate_bounds()
-    self:_calc_child_bounds(child, true)
-
+    self:calculate_bounds()
     self:update_layout()
 end
+
 
 ---@param ... UIElement | UIText
 function Container:add_children(...)

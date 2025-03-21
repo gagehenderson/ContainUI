@@ -47,6 +47,8 @@ end
 --     wrapping / non wrapping.
 --   * If set to not wrap, we still need to account for \n characters manually
 --     put in place by the user (font:getWrap() will account for these).
+--   * Need to properly handle the case where our parent is a container and has
+--     auto width, and we have auto width...
 ---@return number, number
 function Text:get_content_dimensions()
     local dimensions = { width = 0, height = 0 }
@@ -74,10 +76,13 @@ function Text:get_content_dimensions()
         end
     end
 
+    -- Handle auto dimensions.
     if self.spec_dimensions.width == "auto" then
         if self.wrap_text then
-            local parent_bounds = self:get_parent_bounds()
-            wrap_width = parent_bounds.width
+            if not (self.parent and self.parent.__is_container and self.parent.spec_dimensions.width == "auto") then
+                local parent_bounds = self:get_parent_bounds()
+                wrap_width = parent_bounds.width
+            end
         end
         local max_width, _ = self.font:getWrap(self.text, wrap_width)
         dimensions.width = max_width
