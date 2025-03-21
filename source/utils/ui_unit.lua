@@ -1,6 +1,8 @@
 
 -- The user can specify certain units as pixel values or percentages.
--- Percentages are relative to the parent's bounds.
+-- Percentages are typically relevant to the parent's bounds.
+-- But essentially, this is a custom "type" that can either be a number or a
+-- percentage (as a string).
 ---@alias ui_unit
 ---| string
 ---| number

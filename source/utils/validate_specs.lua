@@ -4,12 +4,20 @@
 -- may not necessary reflect the actual state of the element.
 --
 -- They are used when instantiating or updating an element.
+-- (e.g. `Element:new(specs_go_here)`)
 --
 -- This function compares provided specifications to a sort of "spec definition"
 -- that describes what the user specified ones should look like.
 --
+-- Basically ensuring types and values are correct (to a degree), hopefully
+-- helping the user understand how to properly specify what they want!
+--
 -- Could obviously be more robust, but I think it does a good enough job of
 -- guiding the user to make sure they are using the right types and values.
+--
+-- As of writing, there is only one spec definition (ElementSpecs.lua), which 
+-- includes every possible spec for every element - But in the future, it may
+-- make sense to split them up.
 
 local PATH    = (...):gsub('%.validate_specs$', '')
 local ui_unit = require(PATH .. ".ui_unit")

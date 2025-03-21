@@ -2,6 +2,8 @@ local PATH    = (...):gsub('%.Container$', '')
 local Element = require(PATH .. ".Element") ---@type UIElement
 local ui_unit = require(PATH .. ".utils.ui_unit") ---@type ui_unit_utils
 
+-- The primary building block for all UIs. Used to layout child elements.
+-- Supports custom spacing, directions, alignment, and more.
 ---@class UIContainer: UIElement
 ---@field children UIElement[] | UIText[]
 ---@field child_bounds {max_width: number, max_height: number, total_width: number, total_height: number}

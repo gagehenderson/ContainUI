@@ -4,6 +4,7 @@ local ui_unit = require(PATH .. ".utils.ui_unit") ---@type ui_unit_utils
 
 local DEFAULT_FONT = love.graphics.newFont(14)
 
+-- Display text. Supports wrapping, shadows, and more.
 ---@class UIText: UIElement
 ---@field text string
 ---@field font love.Font

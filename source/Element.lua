@@ -3,8 +3,10 @@ local ElementSpecs   = require(PATH .. ".ElementSpecs")
 local validate_specs = require(PATH .. ".utils.validate_specs")
 local ui_unit        = require(PATH .. ".utils.ui_unit") ---@type ui_unit_utils
 
--- All child classes must implement `get_content_dimensions()`.
--- It is recommended to call `Element:calculate_bounds()` in the constructor.
+-- Base class for all UI elements.
+-- All subclasses must implement `get_content_dimensions()`.
+-- It is recommended to call `calculate_bounds()` in the constructors of
+-- subclasses.
 ---@class UIElement
 ---@field parent? UIContainer
 ---@field content_bounds {x: number, y: number, width: number, height: number}
