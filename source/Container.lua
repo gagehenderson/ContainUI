@@ -5,7 +5,8 @@ local ui_unit = require(PATH .. ".utils.ui_unit") ---@type ui_unit_utils
 -- The primary building block for all UIs. Used to layout child elements.
 -- Supports custom spacing, directions, alignment, and more.
 ---@class UIContainer: UIElement
----@field children UIElement[] | UIText[]
+---@field __is_container boolean Used by parent containers to determine if this is a container.
+---@field children UIElement[] | UIText[] | UIContainer[]
 ---@field child_bounds {max_width: number, max_height: number, total_width: number, total_height: number}
 ---@field element_spacing number
 ---@field layout_direction "horizontal" | "vertical"
@@ -20,6 +21,7 @@ function Container:new(specs)
     local new = Element:new(specs) ---@type UIContainer
     setmetatable(new, {__index = self})
 
+    new.__is_container = true
     new.children = {}
     new.element_spacing = specs.element_spacing or 0
     new.child_bounds = {
@@ -73,7 +75,7 @@ function Container:add_child(child)
     child:calculate_bounds()
     self:_calc_child_bounds(child, true)
 
-    self:_update_layout()
+    self:update_layout()
 end
 
 ---@param ... UIElement | UIText
@@ -127,7 +129,9 @@ end
 
 -- TODO: Clean this up, can do some mapping of coords/directions/dimensions so
 -- we don't have to repeat the same code for vertical and horizontal layouts.
-function Container:_update_layout()
+--
+-- When updating our layout, we also need to update any child container's layouts.
+function Container:update_layout()
     if self.layout_direction == "vertical" then
         local y
         if self.justify_children == "start" then
@@ -175,6 +179,11 @@ function Container:_update_layout()
             child:set_position(x, y)
 
             x = x + child.content_bounds.width + self.element_spacing
+        end
+    end
+    for _, child in ipairs(self.children) do
+        if child.__is_container then
+            child:update_layout()
         end
     end
 end
