@@ -84,8 +84,8 @@ function Container:add_child(child)
 
     table.insert(self.children, child)
 
-    self:_calc_child_bounds(child, true) -- TODO: Better name for this...
     child:calculate_bounds()
+    self:_calc_child_bounds(child, true) -- TODO: Better name for this...
     self:calculate_bounds()
     self:update_layout()
 end
@@ -160,14 +160,14 @@ function Container:update_layout()
             if self.align_children == "start" then
                 x = self.content_bounds.x
             elseif self.align_children == "center" then
-                x = self.content_bounds.x + self.content_bounds.width / 2 - child.content_bounds.width / 2
+                x = self.content_bounds.x + self.content_bounds.width / 2 - child.padding_bounds.width / 2
             elseif self.align_children == "end" then
-                x = self.content_bounds.x + self.content_bounds.width - child.content_bounds.width
+                x = self.content_bounds.x + self.content_bounds.width - child.padding_bounds.width
             end
 
             child:set_position(x, y)
 
-            y = y + child.content_bounds.height + self.element_spacing
+            y = y + child.padding_bounds.height + self.element_spacing
         end
     elseif self.layout_direction == "horizontal" then
         local x
@@ -184,14 +184,14 @@ function Container:update_layout()
             if self.align_children == "start" then
                 y = self.content_bounds.y
             elseif self.align_children == "center" then
-                y = self.content_bounds.y + self.content_bounds.height / 2 - child.content_bounds.height / 2
+                y = self.content_bounds.y + self.content_bounds.height / 2 - child.padding_bounds.height / 2
             elseif self.align_children == "end" then
-                y = self.content_bounds.y + self.content_bounds.height - child.content_bounds.height
+                y = self.content_bounds.y + self.content_bounds.height - child.padding_bounds.height
             end
 
             child:set_position(x, y)
 
-            x = x + child.content_bounds.width + self.element_spacing
+            x = x + child.padding_bounds.width + self.element_spacing
         end
     end
     for _, child in ipairs(self.children) do
@@ -226,13 +226,14 @@ function Container:_calc_child_bounds(new_child, is_added)
     self.child_bounds.max_width = 0
     self.child_bounds.max_height = 0
     for _, c in ipairs(self.children) do
+        local padding_bounds = c:get_padding_bounds()
         self.child_bounds.max_width = math.max(
             self.child_bounds.max_width,
-            c.content_bounds.width
+            padding_bounds.width
         )
         self.child_bounds.max_height = math.max(
             self.child_bounds.max_height,
-            c.content_bounds.height
+            padding_bounds.height
         )
     end
 end

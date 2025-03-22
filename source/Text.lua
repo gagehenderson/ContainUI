@@ -78,11 +78,9 @@ function Text:get_content_dimensions()
 
     -- Handle auto dimensions.
     if self.spec_dimensions.width == "auto" then
-        if self.wrap_text then
-            if not (self.parent and self.parent.__is_container and self.parent.spec_dimensions.width == "auto") then
-                local parent_bounds = self:get_parent_bounds()
-                wrap_width = parent_bounds.width
-            end
+        if self.wrap_text and not (self.parent and self.parent.__is_container and self.parent.spec_dimensions.width == "auto") then
+            local parent_bounds = self:get_parent_bounds()
+            wrap_width = parent_bounds.width
         end
         local max_width, _ = self.font:getWrap(self.text, wrap_width)
         dimensions.width = max_width
@@ -96,10 +94,11 @@ function Text:get_content_dimensions()
 end
 
 function Text:draw()
+    Element.draw(self)
+
     local wrap_width = self.wrap_text and self.content_bounds.width or math.huge
     local max_width, _ = self.font:getWrap(self.text, wrap_width)
     wrap_width = max_width
-    Element.draw(self)
     love.graphics.setFont(self.font)
 
     local x
